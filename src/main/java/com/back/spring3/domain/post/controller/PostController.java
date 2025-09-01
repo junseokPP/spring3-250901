@@ -2,14 +2,22 @@ package com.back.spring3.domain.post.controller;
 
 import com.back.spring3.domain.post.entity.Post;
 import com.back.spring3.domain.post.service.PostService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class PostController {
 
     private PostService postService;
+
+    @Autowired
+    public PostController(PostService postService) {
+        this.postService = postService;
+    }
 
     public PostController() {
     }
@@ -18,7 +26,7 @@ public class PostController {
     @ResponseBody
     public String write(){
         return """
-                <form action="/posts/doWrite">
+                <form method="POST" action="/posts/doWrite">
                     <input type="text" name="title">
                     <br>
                     <textarea name="content"></textarea>
@@ -28,7 +36,7 @@ public class PostController {
                 """;
     }
 
-    @GetMapping("/posts/doWrite")
+    @PostMapping("/posts/doWrite")
     @ResponseBody
     public String doWrite(String title, String content){
 
