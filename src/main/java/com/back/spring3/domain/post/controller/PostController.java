@@ -1,5 +1,7 @@
 package com.back.spring3.domain.post.controller;
 
+import com.back.spring3.domain.post.entity.Post;
+import com.back.spring3.domain.post.service.PostService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -7,11 +9,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class PostController {
 
+    private PostService postService;
+
+    public PostController() {
+    }
+
     @GetMapping("/posts/write")
     @ResponseBody
     public String write(){
         return """
-                <form action="https://localhost:8080/">
+                <form action="/posts/doWrite">
                     <input type="text" name="title">
                     <br>
                     <textarea name="content"></textarea>
@@ -21,4 +28,12 @@ public class PostController {
                 """;
     }
 
+    @GetMapping("/posts/doWrite")
+    @ResponseBody
+    public String doWrite(String title, String content){
+
+        Post post = postService.write(title,content);
+
+        return "%d번 글이 작성되었습니다.".formatted(post.getId());
+    }
 }
