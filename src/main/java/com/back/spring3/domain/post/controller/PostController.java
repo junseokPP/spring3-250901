@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -70,7 +71,7 @@ public class PostController {
     @PostMapping("/posts/doWrite")
     @ResponseBody
     public String doWrite(
-            @Valid PostWriteForm form
+            @Valid PostWriteForm form, BindingResult bindingResult
             ){
 
 //        if(title.isBlank()) return getWriteFormHtml("제목을 입력해주세요.",title,content,"title");
