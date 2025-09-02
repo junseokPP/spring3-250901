@@ -27,30 +27,6 @@ public class PostController {
         this.postService = postService;
     }
 
-    private String getWriteFormHtml(String errorMessage,String title,String content){
-        return """
-                <ul style="color:red">%s</ul>
-                
-                <form method="POST" action="/posts/doWrite">
-                    <input type="text" name="title" value="%s" autoFocus>
-                    <br>
-                    <textarea name="content">%s</textarea>
-                    <br>
-                    <input type="submit" value="작성">
-                </form>
-                
-                <script>
-                    const li = document.querySelect("ul li");
-                    const errorFieldName = li.dataset.errorFieldName;
-                    
-                    if(errorFieldName.length > 0 )){
-                        const form = document.querySelector("form");
-                        form[errorFieldName].focus();
-                    }
-                </script>
-                """.formatted(errorMessage,title,content);
-    }
-
     public PostController() {
     }
 
@@ -68,13 +44,11 @@ public class PostController {
 
 
     @GetMapping("/posts/write")
-    @ResponseBody
     public String write(){
-        return getWriteFormHtml("","","");
+        return "post/write";
     }
 
     @PostMapping("/posts/doWrite")
-    @ResponseBody
     public String doWrite(
             @Valid PostWriteForm form, BindingResult bindingResult
             ){
@@ -95,7 +69,7 @@ public class PostController {
                     .sorted()
                     .collect(Collectors.joining("<br>"));
 
-            return getWriteFormHtml(errorMessages,form.title,form.content,fieldName);
+            return "post/write";
         }
 
 //        if(title.isBlank()) return getWriteFormHtml("제목을 입력해주세요.",title,content,"title");
@@ -107,6 +81,6 @@ public class PostController {
 
         Post post = postService.write(form.title,form.content);
 
-        return "%d번 글이 작성되었습니다.".formatted(post.getId());
+        return "post/writeDone";
     }
 }
