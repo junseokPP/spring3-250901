@@ -19,18 +19,27 @@ public class PostController {
         this.postService = postService;
     }
 
-    private String getWriteFormHtml(String errorMessage){
+    private String getWriteFormHtml(String errorMessage,String title,String content,String errorFieldName){
         return """
                 <div style="color:red">%s</div>
                 
                 <form method="POST" action="/posts/doWrite">
-                    <input type="text" name="title">
+                    <input type="text" name="title" value="%s" autoFocus>
                     <br>
-                    <textarea name="content"></textarea>
+                    <textarea name="content">%s</textarea>
                     <br>
                     <input type="submit" value="작성">
                 </form>
-                """.formatted(errorMessage);
+                
+                <script>
+                    const errorFieldName= "%s";
+                    
+                    if(errorFieldName.length > 0 )){
+                        const form = document.querySelector("form");
+                        form[errorFieldName].focus();
+                    }
+                </script>
+                """.formatted(errorMessage,title,content,errorFieldName);
     }
 
     public PostController() {
@@ -39,15 +48,15 @@ public class PostController {
     @GetMapping("/posts/write")
     @ResponseBody
     public String write(){
-        return getWriteFormHtml("");
+        return getWriteFormHtml("","","","");
     }
 
     @PostMapping("/posts/doWrite")
     @ResponseBody
     public String doWrite(String title, String content){
 
-        if(title.isBlank()) return getWriteFormHtml("제목을 입력해주세요.");
-        if(content.isBlank()) return getWriteFormHtml("내용을 입력해주세요.");
+        if(title.isBlank()) return getWriteFormHtml("제목을 입력해주세요.",title,content,"title");
+        if(content.isBlank()) return getWriteFormHtml("내용을 입력해주세요.",title,content,"content");
 
         Post post = postService.write(title,content);
 
