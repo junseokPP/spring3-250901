@@ -82,10 +82,11 @@ public class PostController {
 
             String fieldName = "title";
 
+            FieldError fieldError = bindingResult.getFieldError();
+
             String errorMessages = bindingResult.getFieldErrors()
                     .stream()
-                    .map(FieldError::getDefaultMessage)
-                    .sorted()
+                    .map(field -> field.getField() + " : " + field.getDefaultMessage())
                     .collect(Collectors.joining("<br>"));
 
             return getWriteFormHtml(errorMessages,form.title,form.content,fieldName);
