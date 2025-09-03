@@ -16,6 +16,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -68,5 +69,13 @@ public class PostController {
         model.addAttribute("post", post);
 
         return "post/detail";
+    }
+
+    @GetMapping("/posts")
+    public String list(Model model) {
+
+        List<Post> posts = postService.findAll();
+        model.addAttribute("posts", posts);
+        return "post/list";
     }
 }
