@@ -16,6 +16,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -60,4 +61,12 @@ public class PostController {
         return "redirect:/posts/write"; // 주소창을 바꿔
     }
 
+    @GetMapping("/posts/{id}")
+    public String detail(@PathVariable Long id, Model model) {
+
+        Post post = postService.findById(id).get();
+        model.addAttribute("post", post);
+
+        return "post/detail";
+    }
 }
