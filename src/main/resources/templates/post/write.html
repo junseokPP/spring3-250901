@@ -9,6 +9,7 @@
 <form method="POST" action="/posts/doWrite" th:object="${form}">
 
     <div th:replace="~{post/form_errors :: formErrorsFragment}"></div>
+
     <div>
         <label for="">제목</label>
         <div>
