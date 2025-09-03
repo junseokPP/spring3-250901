@@ -52,32 +52,10 @@ public class PostController {
     ) {
 
         if(bindingResult.hasErrors()) {
-            // 스트림
-            String errorMessages = bindingResult.getFieldErrors()
-                    .stream()
-                    .map(field -> field.getField() + "-" + field.getDefaultMessage())
-                    .map(message -> message.split("-"))
-                    .map(bits -> """
-                            <!-- %s --><li data-error-field-name="%s">%s</li>
-                            """.formatted(bits[1], bits[0], bits[2]))
-                    .sorted()
-                    .collect(Collectors.joining("\n"));
-
-            model.addAttribute("errorMessages", errorMessages);
-
             return "post/write";
         }
 
-
-//        if(title.isBlank()) return getWriteFormHtml("제목을 입력해주세요.", title, content, "title");
-//        if(title.length() < 2) return getWriteFormHtml("제목은 2글자 이상 적어주세요.", title, content, "title");
-//        if(title.length() > 10) return getWriteFormHtml("제목은 10글자 이상 넘을 수 없습니다.", title, content, "title");
-//        if(content.isBlank()) return getWriteFormHtml("내용을 입력해주세요.", title, content, "content");
-//        if(content.length() < 2) return getWriteFormHtml("내용은 2글자 이상 적어주세요.", title, content, "content");
-//        if(content.length() > 100) return getWriteFormHtml("내용은 100글자 이상 넘을 수 없습니다.", title, content, "content");
-
         Post post = postService.write(form.title, form.content);
-
         model.addAttribute("id", post.getId());
         return "post/writeDone";
     }
