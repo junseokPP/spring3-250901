@@ -2,6 +2,7 @@ package com.back.spring3.domain.post.controller;
 
 import com.back.spring3.domain.post.entity.Post;
 import com.back.spring3.domain.post.service.PostService;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -94,6 +95,7 @@ public class PostController {
     }
 
     @PostMapping("/posts/{id}/modify")
+    @Transactional
     public String doModify(
             @PathVariable Long id,
             @ModelAttribute("form") @Valid PostModifyForm form,
