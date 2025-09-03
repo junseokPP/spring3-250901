@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 
 @Controller
 public class PostController {
+
 
     private final PostService postService;
 
@@ -61,6 +63,53 @@ public class PostController {
         model.addAttribute("id", post.getId());
         return "redirect:/posts/%d".formatted(post.getId()); // 주소창을 바꿔
     }
+
+
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    public static class PostModifyForm {
+        @NotBlank(message = "01-title-제목을 입력해주세요.")
+        @Size(min = 2, max = 10, message = "02-title-제목은 2글자 이상 10글자 이하로 입력해주세요.")
+        private String title;
+
+        @NotBlank(message = "03-content-내용을 입력해주세요.")
+        @Size(min = 2, max = 100, message = "04-content-내용은 2글자 이상 100글자 이하로 입력해주세요.")
+        private String content;
+    }
+
+    @GetMapping("/posts/{id}/modify")
+    public String modify(
+            @PathVariable Long id,
+            @ModelAttribute("form") PostModifyForm form,
+            Model model
+    ) {
+
+        Post post = postService.findById(id).get();
+        form.setTitle(post.getTitle());
+        form.setContent(post.getContent());
+
+        model.addAttribute("post", post);
+        return "post/modify";
+    }
+
+    @PostMapping("/posts/{id}/modify")
+    public String doModify(
+            @PathVariable Long id,
+            @ModelAttribute("form") @Valid PostModifyForm form,
+            BindingResult bindingResult
+    ) {
+
+        if(bindingResult.hasErrors()) {
+            return "post/modify";
+        }
+
+        Post post = postService.findById(id).get();
+        postService.modify(post, form.title, form.content);
+
+        return "redirect:/posts/%d".formatted(post.getId());
+    }
+
 
     @GetMapping("/posts/{id}")
     public String detail(@PathVariable Long id, Model model) {
