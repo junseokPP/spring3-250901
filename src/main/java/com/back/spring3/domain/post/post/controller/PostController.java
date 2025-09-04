@@ -2,7 +2,6 @@ package com.back.spring3.domain.post.post.controller;
 
 import com.back.spring3.domain.post.post.entity.Post;
 import com.back.spring3.domain.post.post.service.PostService;
-import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -10,16 +9,19 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.io.Reader;
 import java.util.List;
 
 @Controller
 public class PostController {
-
 
     private final PostService postService;
 
