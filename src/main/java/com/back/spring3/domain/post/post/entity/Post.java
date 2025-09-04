@@ -19,7 +19,7 @@ public class Post extends BaseEntity {
     private String title;
     private String content;
 
-    @OneToMany(mappedBy = "post",cascade = {CascadeType.PERSIST,CascadeType.REMOVE},fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "post", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
 
     public Post(String title, String content) {
@@ -33,9 +33,16 @@ public class Post extends BaseEntity {
     }
 
     public Comment addComment(String content) {
-        Comment comment = new Comment(content,this);
+        Comment comment = new Comment(content, this);
         this.comments.add(comment);
 
         return comment;
+    }
+
+    public void deleteComment(Long commentId) {
+        comments.stream()
+                .filter(c -> c.getId().equals(commentId))
+                .findFirst()
+                .ifPresent(comments::remove);
     }
 }
