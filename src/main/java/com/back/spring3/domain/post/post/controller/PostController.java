@@ -1,26 +1,21 @@
-package com.back.spring3.domain.post.controller;
+package com.back.spring3.domain.post.post.controller;
 
-import com.back.spring3.domain.post.entity.Post;
-import com.back.spring3.domain.post.service.PostService;
-import jakarta.transaction.Transactional;
+import com.back.spring3.domain.post.post.entity.Post;
+import com.back.spring3.domain.post.post.service.PostService;
+import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.Reader;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Controller
 public class PostController {
@@ -114,7 +109,8 @@ public class PostController {
 
 
     @GetMapping("/posts/{id}")
-    public String detail(@PathVariable Long id, Model model) {
+    @Transactional(readOnly = true)
+    public String detail(@PathVariable Long id, Model model, Reader reader) {
 
         Post post = postService.findById(id).get();
         model.addAttribute("post", post);
@@ -123,6 +119,7 @@ public class PostController {
     }
 
     @GetMapping("/posts")
+    @Transactional(readOnly = true)
     public String list(Model model) {
 
         List<Post> posts = postService.findAll();
