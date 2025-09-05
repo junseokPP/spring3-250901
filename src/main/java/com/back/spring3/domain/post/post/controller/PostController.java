@@ -9,10 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.Reader;
 import java.util.List;
@@ -83,7 +80,7 @@ public class PostController {
         return "post/post/modify";
     }
 
-    @PostMapping("/posts/{id}/modify")
+    @PutMapping("/posts/{id}")
     @Transactional
     public String doModify(
             @PathVariable Long id,
@@ -102,6 +99,19 @@ public class PostController {
         postService.modify(post, form.title, form.content);
 
         return "redirect:/posts/%d".formatted(post.getId());
+    }
+
+    @DeleteMapping("/posts/{id}")
+    @Transactional
+    public String doDelete(
+            @PathVariable Long id
+    ) {
+
+        Post post = postService.findById(id).get();
+        postService.delete(post);
+
+        return "redirect:/posts";
+
     }
 
 
