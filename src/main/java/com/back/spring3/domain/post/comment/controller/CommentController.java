@@ -6,16 +6,11 @@ import com.back.spring3.domain.post.post.service.PostService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -23,13 +18,11 @@ public class CommentController {
 
     private final PostService postService;
 
-    @AllArgsConstructor
-    @Getter
-    public static class CommentWriteForm {
-        @NotBlank(message = "댓글 내용을 입력해주세요.")
-        @Size(min = 2, max = 100, message = "댓글 내용은 2글자 이상 100글자 이하로 입력해주세요.")
-        private String content;
-    }
+    record CommentWriteForm(
+            @NotBlank(message = "댓글 내용을 입력해주세요.")
+            @Size(min = 2, max = 100, message = "댓글 내용은 2글자 이상 100글자 이하로 입력해주세요.")
+            String content
+    ) {}
 
     @PostMapping("/posts/{postId}/comments/write")
     @Transactional
@@ -39,19 +32,16 @@ public class CommentController {
     ) {
         Post post = postService.findById(postId).get();
 
-        postService.writeComment(post, form.getContent());
+        postService.writeComment(post, form.content);
         return "redirect:/posts/" + postId;
     }
 
 
-    @AllArgsConstructor
-    @Getter
-    @Setter
-    public static class CommentModifyForm {
-        @NotBlank(message = "댓글 내용을 입력해주세요.")
-        @Size(min = 2, max = 100, message = "댓글 내용은 2글자 이상 100글자 이하로 입력해주세요.")
-        private String content;
-    }
+    record CommentModifyForm(
+            @NotBlank(message = "댓글 내용을 입력해주세요.")
+            @Size(min = 2, max = 100, message = "댓글 내용은 2글자 이상 100글자 이하로 입력해주세요.")
+            String content
+    ) {}
 
     @GetMapping("/posts/{postId}/comments/{commentId}/modify")
     public String modify(
@@ -70,7 +60,7 @@ public class CommentController {
         return "post/comment/modify";
     }
 
-    @PostMapping("/posts/{postId}/comments/{commentId}/modify")
+    @PutMapping("/posts/{postId}/comments/{commentId}")
     @Transactional
     public String doModify(
             @PathVariable Long postId,
@@ -79,15 +69,15 @@ public class CommentController {
     ) {
 
         Post post = postService.findById(postId).get();
-        postService.modifyComment(post, commentId, form.getContent());
+        postService.modifyComment(post, commentId, form.content);
 
         return "redirect:/posts/" + postId;
     }
 
 
-    @GetMapping("/posts/{postId}/comments/{commentId}/delete")
+    @DeleteMapping("/posts/{postId}/comments/{commentId}")
     @Transactional
-    public String delete(
+    public String doDelete(
             @PathVariable Long postId,
             @PathVariable Long commentId
     ) {
